@@ -1,13 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>CityDriver</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div>
-        
+    <div id="main-menu" class="screen active">
+        <div class="menu-content">
+            <h1 class="game-title">CityDriver</h1>
+            <p class="game-subtitle">2D Open world driving</p>
+            <button id="btn-start" class="menu-btn primary">Start Game</button>
+            <button id="btn-upgrades" class="menu-btn">Upgrades</button>
+            <button id="btn-howtoplay" class="menu-btn">How to play</button>
+        </div>
     </div>
+
+    <div id="howtoplay-screen" class="screen">
+        <div class="menu-content">
+            <h2>How to play</h2>
+            <table class="controls-table">
+                <tr>
+                    <td>W / ⬆️</td>Accelerate
+                </tr>
+                <tr>
+                    <td>S / ⬇️</td>Brake / Reverse
+                </tr>
+                <tr>
+                    <td>A / ⬅️</td>Steer Left
+                </tr>
+                <tr>
+                    <td>D / ➡️</td>Steer Right
+                </tr>
+                <tr>
+                    <td>Space</td>Handbrake / Drift
+                </tr>
+                <tr>
+                    <td>H</td>Horn
+                </tr>
+                <tr>
+                    <td>Esc</td>Pause
+                </tr>
+            </table>
+            <button id="btn-back-main" class="menu-btn">⬅ Back</button>
+        </div>
+    </div>
+
+    <div id="upgrades-screen" class="screen">
+        <div class="menu-content">
+            <h2> Upgrades</h2>
+            <div id="upgrades-list">
+
+            </div>
+            <div id="player-money-display"> Money: <span id="money-amount">0</span></div>
+            <button id="btn-back-main2" class="menu-btn">⬅ Back</button>
+        </div>
+    </div>
+
+    <div id="game-container" class="screen">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="hud">
+            <div id="hud-mission">
+                <div id="mission-title">No Active Mission</div>
+                <div id="mission-objective"></div>
+                <div id="mission-timer" class="hidden">⏱️ <span id="timer-value">0</span></div>
+            </div>
+
+            <div id="hud-score">
+                <div id="score-display">Score: <span id="score-value">0</span></div>
+                <div id="money-hud">💰 <span id="money-hud-value">0</span></div>
+            </div>
+
+            <div id="hud-speed">
+                <div id="speed-display">
+                    <span id="speed-value">0</span>
+                    <span class="speed-unit">km/h</span>
+                </div>
+                <div id="gear-display">N</div>
+            </div>
+
+            <div id="hud-bars">
+                <div class="bar-row">
+                    <span class="bar-label">⛽</span>
+                    <div class="bar-track">
+                        <div id="fuel-bar" class="bar fuel"></div>
+                    </div>
+                    <span id="fuel-text" class="bar-value">100%</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">🛡️</span>
+                    <div class="bar-track">
+                        <div id="health-bar" class="bar health"></div>
+                    </div>
+                    <span id="health-text" class="bar-value">100%</span>
+                </div>
+            </div>
+
+
+            <div id="hud-minimap">
+                <canvas id="minimapCanvas" width="150" height="150"></canvas>
+            </div>
+        </div>
+
+        <div id="pause-menu" class="overlay hidden">
+            <div class="overlay-content">
+                <h2>⏸ Paused</h2>
+                <button id="btn-resume" class="menu-btn primary"> Resume</button>
+                <button id="btn-restart" class="menu-btn">Restart</button>
+                <button id="btn-quit" class="menu-btn">Quit to menu</button>
+            </div>
+        </div>
+
+        <div id="mission-complete" class="overlay hidden">
+            <div class="overlay-content success">
+                <h2>✅ Mission Complete!</h2>
+                <div id="mission-reward">+$<span id="reward-amount">0</span></div>
+                <div id="mission-bonus">Bonus: <span id="bonus-amount">0</span></div>
+                <button id="btn-next-mission" class="menu-btn primary">Next Mission</button>
+                <button id="btn-free-drive" class="menu-btn">Free Drive</button>
+            </div>
+        </div>
+
+
+        <div id="mission-failed" class="overlay hidden">
+            <div class="overlay-content danger">
+                <h2>❌ Mission Failed</h2>
+                <div id="fail-reason"></div>
+                <button id="btn-retry" class="menu-btn primary">Retry</button>
+                <button id="btn-skip" class="menu-btn">Skip Mission</button>
+            </div>
+        </div>
+
+        <div id="game-over" class="overlay hidden">
+            <div class="overlay-content danger">
+                <h2>💥 Game Over</h2>
+                <p id="game-over-reason">Your car was destroyed.</p>
+                <div id="final-score-display">Final score: <span id="final-score">0</span></div>
+                <button id="btn-game-over-restart" class="menu-btn primary">Play Again</button>
+                <button id="btn-game-over-menu" class="menu-btn">Main menu</button>
+            </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+
+        <div id="fuel-prompt" class="prompt hidden">
+            ⛽ Press <kbd>F</kbd> to refuel - $<span id="fuel-cost">0</span>
+        </div>
+
+        <div id="passenger-prompt" class="prompt hidden">
+            Press <kbd>E</kbd> to pick up passenger
+        </div>
+    </div>
+
+    <div id="loading-screen" class="screen active">
+        <div class="menu-content">
+            <h2>Loading CityDriver...</h2>
+            <div id="loading-bar-track">
+                <div id="loading-bar"></div>
+            </div>
+            <div id="loading-status">Initializing</div>
+        </div>
+    </div>
+
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/math.js"></script>
+
+    <script src="js/input.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/physics/collision.js"></script>
+    <script src="js/physics/friction.js"></script>
+    <script src="js/physics/physicsEngine.js"></script>
+    <script src="js/world/tileManager.js"></script>
+    <script src="js/world/roadGenerator.js"></script>
+    <script src="js/world/buildingGenerator.js"></script>
+    <script src="js/entities/car.js"></script>
+    <script src="js/entities/playerCar.js"></script>
+    <script src="js/entities/trafficCar.js"></script>
+    <script src="js/entities/obstacle.js"></script>
+    <script src="js/ai/pathfinding.js"></script>
+    <script src="js/ai/trafficAI.js"></script>
+    <script src="js/systems/damageSystem.js"></script>
+    <script src="js/systems/fuelSystem.js"></script>
+    <script src="js/systems/scoringSystem.js"></script>
+    <script src="js/systems/upgradeSystem.js"></script>
+    <script src="js/missions/deliveryMission.js"></script>
+    <script src="js/missions/missionManager.js"></script>
+    <script src="js/missions/taxiMission.js"></script>
+    <script src="js/missions/timeTrialMission.js"></script>
+    <script src="js/ui/hud.js"></script>
+    <script src="js/ui/menu.js"></script>
+    <script src="js/ui/minimap.js"></script>
+    <script src="js/ui/missionUI.js"></script>
+    <script src="js/audio/soundManager.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+
 </body>
+
 </html>
