@@ -34,7 +34,7 @@ function hideAllOverlays(){
 
 function setText(id, value){
     const el = $(id);
-    if(el) el.textCount = value;
+    if(el) el.textContent = value;
 }
 
 function setWidth(id, percent){
@@ -132,7 +132,7 @@ const DEFAULT_SAVE = {
     settings: {
         masterVolume: AUDIO_MASTER_VOLUME,
         sfxVolume: AUDIO_SFX_VOLUME,
-        musicVOLUME: AUDIO_MUSIC_VOLUME,
+        musicVolume: AUDIO_MUSIC_VOLUME,
     },
 };
 
@@ -227,7 +227,7 @@ function drawTextCentered(ctx, text, x, y, font, color){
     ctx.font = font;
     ctx.fillStyle = color;
     ctx.textAlign = 'center';
-    ctx.textBaseLine = 'middle';
+    ctx.textBaseline = 'middle';
     ctx.fillText(text, x, y);
 }
 
@@ -283,7 +283,7 @@ class Timer{
     }
 
     toString() {
-        const s = Math.ceit(this.remaining);
+        const s = Math.ceil(this.remaining);
         if(s>=60) {
             const m = Math.floor(s/60);
             return `${m}:${String(s%60).padStart(2, '0')}`;
@@ -304,6 +304,7 @@ class ObjectPool{
 
     get() {
         const obj = this._pool.length > 0 ? this._pool.pop() : this._factory();
+        this._reset(obj);
         return obj;
     }
 
