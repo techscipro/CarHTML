@@ -28,7 +28,7 @@ const PhysicsEngine = (() => {
             const tile = worldToTile(car.x, car.y);
             const tileId = (isTileInBounds(tile.col, tile.row)) ? map.getTile(tile.col, tile.row) : TILE.GRASS;
 
-            car.speed = Friction.applyAll(car.spped, tileId, dt);
+            car.speed = Friction.applyAll(car.speed, tileId, dt);
 
             const grip = Friction.getGripFactor(tileId, false);
             const v = Friction.applyLateralFriction(
@@ -55,7 +55,7 @@ const PhysicsEngine = (() => {
 
 
     function syncSpeed(entity) {
-        entity.speed = Math.sqrt(entity.vx * entity.vx + entity.vy * entity.vx);
+        entity.speed = Math.sqrt(entity.vx * entity.vx + entity.vy * entity.vy);
     }
 
     function _processCollisionEvents(player) {
@@ -138,4 +138,4 @@ const PhysicsEngine = (() => {
         isStopped,
         clampSpeed,
     };
-})
+})();
