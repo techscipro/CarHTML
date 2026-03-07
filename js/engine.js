@@ -21,10 +21,10 @@ const Engine = (() => {
     let _fpsTimer = 0;
     let _fpsFrames = 0;
 
-    let _canvas = 0;
-    let _ctx = 0;
+    let _canvas = null;
+    let _ctx = null;
 
-    let _game = 0;
+    let _game = null;
 
     function init(game) {
         _game = game;
@@ -41,7 +41,7 @@ const Engine = (() => {
     function _resizeCanvas() {
         _canvas.width = window.innerWidth;
         _canvas.height = window.innerHeight;
-        if (camera) Camera.init(_canvas.width, _canvas.height);
+        if (Camera) Camera.init(_canvas.width, _canvas.height);
     }
 
     function start() {
